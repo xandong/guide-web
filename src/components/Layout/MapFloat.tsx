@@ -1,4 +1,4 @@
-import { MapTrifold } from "phosphor-react";
+import { MapTrifold, X } from "phosphor-react";
 import React, { useState } from "react";
 import GoogleMaps from "../maps/GoogleMaps";
 
@@ -17,8 +17,10 @@ const MapFloat: React.FC = () => {
         bottom-0 right-0 w-screen h-screen
           `}
         >
-          <div className={` flex-1 h-[calc(100vh-7.5rem)] bg-white/90 rounded border-2 border-zinc-300 p-1 transition-all duration-300`}>
-          <GoogleMaps />
+          <div
+            className={` flex-1 h-[calc(100vh-7.5rem)] bg-white/90 rounded border-2 border-zinc-300 p-1 transition-all duration-300`}
+          >
+            <GoogleMaps />
           </div>
         </div>
       )}
@@ -27,7 +29,7 @@ const MapFloat: React.FC = () => {
         onClick={handleToggleMap}
         className="fixed bottom-8 rounded-full right-4 p-3 bg-blue-500 hover:bg-blue-500/95 text-zinc-50 hover:scale-[1.025] transition-all active:bg-blue-600 shadow-lg"
       >
-        <MapTrifold size={32} />
+        {toggleMap ? <X size={32} /> : <MapTrifold size={32} />}
       </button>
     </React.Fragment>
   );
