@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import CardsList from "../components/home/CardsList";
+import CardsList from "../components/Home/CardsList";
 import PageWrapper from "../components/Layout";
 import MapFloat from "../components/Layout/MapFloat";
 
