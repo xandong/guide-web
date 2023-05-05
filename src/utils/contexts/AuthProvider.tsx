@@ -4,6 +4,9 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import { googleLogout } from '@react-oauth/google';
+import { WrapperFull } from "../../components/Layout/WrapperFull";
+import { CircleNotch } from "phosphor-react";
+import { Loading } from "../../components/wait/Loading";
 
 interface AuthProps {
   authenticated: boolean;
@@ -29,18 +32,26 @@ interface AuthProviderProps {
   children: React.ReactNode;
 }
 export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
+  const [authenticated, setAuthenticated] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [name, setName] = useState("");
   const [accessToken, setAccessToken] = useState("")
-  const [authenticated, setAuthenticated] = useState(false)
   const navigate = useNavigate();
 
   useEffect(() => {
+    const token = localStorage.getItem("a-curiosidade-matou-o-gato")
+
+    if (token) setAuthenticated(true)
+  }, [])
+
+  useEffect(() => {
     if (!authenticated) return navigate("/login", { replace: true });
-  }, [authenticated])
+  }, [authenticated, loading])
 
   function handleAccessToken(token: string) {
     setAccessToken(token);
     setAuthenticated(true);
+    localStorage.setItem("a-curiosidade-matou-o-gato", token)
 
     const apiKey = `${import.meta.env.VITE_KEY_CLIENT_GOOGLE}`
 
@@ -64,7 +75,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
     setAuthenticated(false);
     setName("");
     setAccessToken("");
+    localStorage.removeItem("a-curiosidade-matou-o-gato")
   }
+
+
   
   return (
     <React.Fragment>
