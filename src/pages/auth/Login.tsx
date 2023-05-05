@@ -6,7 +6,7 @@ import { Form } from "../../components/Login/Form";
 import { GoogleLogin } from "../../components/Login/GoogleLogin";
 import { AuthContext } from "../../utils/contexts/AuthProvider";
 import { useNavigate } from "react-router-dom";
-import { CircleNotch } from "phosphor-react";
+import { Redirect } from "../../components/wait/Redirect";
 
 export const Login: React.FC = () => {
   document.title = "Login";
@@ -24,12 +24,7 @@ export const Login: React.FC = () => {
   return (
     <React.Fragment>
       {
-        authenticated ?
-        <WrapperFull>
-          <CircleNotch className="animate-spin" size={36}/>
-          <h1 className="text-xl font-semibold">Redirecionando...</h1>
-        </WrapperFull>
-        :
+        !authenticated ?
         <WrapperFull>
           <img src="/guide-logo.svg" className="mb-6"/>
           <h1
@@ -50,6 +45,7 @@ export const Login: React.FC = () => {
             </label>
           </div>
         </WrapperFull>
+        : <Redirect />
       }
     </React.Fragment>
   )
