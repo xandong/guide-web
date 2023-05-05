@@ -1,13 +1,8 @@
-
 import React, { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import { googleLogout } from '@react-oauth/google';
-import { WrapperFull } from "../../components/Layout/WrapperFull";
-import { CircleNotch } from "phosphor-react";
-import { Loading } from "../../components/wait/Loading";
-
 interface AuthProps {
   authenticated: boolean;
   accessToken: string;
@@ -33,9 +28,9 @@ interface AuthProviderProps {
 }
 export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
   const [authenticated, setAuthenticated] = useState(false)
+  const [accessToken, setAccessToken] = useState("");
   const [loading, setLoading] = useState(true)
   const [name, setName] = useState("");
-  const [accessToken, setAccessToken] = useState("")
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -46,28 +41,29 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
 
   useEffect(() => {
     if (!authenticated) return navigate("/login", { replace: true });
-  }, [authenticated, loading])
+  }, [authenticated]);
 
   function handleAccessToken(token: string) {
     setAccessToken(token);
     setAuthenticated(true);
     localStorage.setItem("a-curiosidade-matou-o-gato", token)
 
-    const apiKey = `${import.meta.env.VITE_KEY_CLIENT_GOOGLE}`
+    const apiKey = `${import.meta.env.VITE_KEY_CLIENT_GOOGLE}`;
 
     const url = `https://people.googleapis.com/v1/people/me?personFields=names,emailAddresses,photos&key=${apiKey}`;
 
-    axios.get(url, {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-      }
-    })
-    .then(response => {
-      console.log({user: response.data});
-    })
-    .catch(error => {
-      console.error(error);
-    });
+    axios
+      .get(url, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((response) => {
+        console.info({ user: response.data });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   function logoutGoogleAuth() {
@@ -78,21 +74,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
     localStorage.removeItem("a-curiosidade-matou-o-gato")
   }
 
-
-  
   return (
     <React.Fragment>
-      <AuthContext.Provider 
-      value={{
-        authenticated,
-        accessToken,
-        logoutGoogleAuth,
-        handleAccessToken,
-        name,
-        setName
-      }}>
-      {props.children}
+      <AuthContext.Provider
+        value={{
+          authenticated,
+          accessToken,
+          logoutGoogleAuth,
+          handleAccessToken,
+          name,
+          setName,
+        }}
+      >
+        {props.children}
       </AuthContext.Provider>
     </React.Fragment>
-    )
-}
+  );
+};

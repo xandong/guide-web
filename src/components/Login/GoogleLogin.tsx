@@ -11,7 +11,7 @@ export const GoogleLogin = () => {
     onSuccess: tokenResponse => {
       handleAccessToken(tokenResponse.access_token)
     },
-    onError: error => console.log({error})
+    onError: error => console.error({error})
   })
 
   return <>
