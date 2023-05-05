@@ -1,9 +1,8 @@
-
 import React, { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-import { googleLogout } from '@react-oauth/google';
+import { googleLogout } from "@react-oauth/google";
 
 interface AuthProps {
   authenticated: boolean;
@@ -30,33 +29,34 @@ interface AuthProviderProps {
 }
 export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
   const [name, setName] = useState("");
-  const [accessToken, setAccessToken] = useState("")
-  const [authenticated, setAuthenticated] = useState(false)
+  const [accessToken, setAccessToken] = useState("");
+  const [authenticated, setAuthenticated] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!authenticated) return navigate("/login", { replace: true });
-  }, [authenticated])
+  }, [authenticated]);
 
   function handleAccessToken(token: string) {
     setAccessToken(token);
     setAuthenticated(true);
 
-    const apiKey = `${import.meta.env.VITE_KEY_CLIENT_GOOGLE}`
+    const apiKey = `${import.meta.env.VITE_KEY_CLIENT_GOOGLE}`;
 
     const url = `https://people.googleapis.com/v1/people/me?personFields=names,emailAddresses,photos&key=${apiKey}`;
 
-    axios.get(url, {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-      }
-    })
-    .then(response => {
-      console.log({user: response.data});
-    })
-    .catch(error => {
-      console.error(error);
-    });
+    axios
+      .get(url, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((response) => {
+        console.info({ user: response.data });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   function logoutGoogleAuth() {
@@ -65,20 +65,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
     setName("");
     setAccessToken("");
   }
-  
+
   return (
     <React.Fragment>
-      <AuthContext.Provider 
-      value={{
-        authenticated,
-        accessToken,
-        logoutGoogleAuth,
-        handleAccessToken,
-        name,
-        setName
-      }}>
-      {props.children}
+      <AuthContext.Provider
+        value={{
+          authenticated,
+          accessToken,
+          logoutGoogleAuth,
+          handleAccessToken,
+          name,
+          setName,
+        }}
+      >
+        {props.children}
       </AuthContext.Provider>
     </React.Fragment>
-    )
-}
+  );
+};
