@@ -1,12 +1,28 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { MagnifyingGlass } from "phosphor-react";
+import axios from "axios";
+
+const API_KEY = import.meta.env.VITE_API_KEY_GOOGLE
 
 const SearchBar: React.FC = () => {
   const [search, setSearch] = useState<string>("");
 
-  function handleSearch(e: ChangeEvent<HTMLInputElement>) {
+  async function handleSearch(e: ChangeEvent<HTMLInputElement>) {
     setSearch(e.target.value);
   }
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await axios.get(`https://maps.googleapis.com/maps/api/place/details/json&key=${API_KEY}`)
+        
+        console.log({response})  
+      } catch (error) {
+        console.error({error})
+        
+      }
+    })()
+    }, [])
 
   return (
     <React.Fragment>

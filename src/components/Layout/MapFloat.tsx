@@ -14,11 +14,11 @@ const MapFloat: React.FC = () => {
       {toggleMap && (
         <div
           className={`p-4 backdrop-brightness-75 fixed transition-all duration-500
-        bottom-0 right-0 w-screen h-screen
+        bottom-0 right-0 w-screen h-screen overflow-hidden 
           `}
         >
           <div
-            className={` flex-1 h-[calc(100vh-7.5rem)] bg-white/90 rounded border-2 border-zinc-300 p-1 transition-all duration-300`}
+            className={` flex-1 h-[calc(100vh-7.5rem)] rounded border-2 border-zinc-300 p-1 transition-all duration-300`}
           >
             <GoogleMaps />
           </div>

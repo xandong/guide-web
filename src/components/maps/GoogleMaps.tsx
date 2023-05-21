@@ -13,7 +13,7 @@ const coords = {
 const GoogleMaps: React.FC = () => {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: import.meta.env.VITE_URL_API_GOOGLE_MAPS
+    googleMapsApiKey: import.meta.env.VITE_API_KEY_GOOGLE
   })
 
   const [map, setMap] = React.useState(null)
@@ -36,9 +36,10 @@ const GoogleMaps: React.FC = () => {
         <GoogleMap
           mapContainerStyle={containerStyle}
           center={coords}
-          zoom={18}
+          zoom={17}
+          options={{mapTypeId: "satellite"}}
 
-          // onLoad={onLoad}
+          onLoad={onLoad}
           // onUnmount={onUnmount}
           >
             <Marker position={coords}

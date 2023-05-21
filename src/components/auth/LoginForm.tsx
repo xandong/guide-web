@@ -1,24 +1,25 @@
-import TextField from '@mui/material/TextField';
-import { Button, IconButton, InputAdornment } from "@mui/material";
-import { LockPersonRounded, MailRounded, Visibility, VisibilityOff } from "@mui/icons-material";
-import { toast } from 'react-toastify' ;   
-
+import { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useForm, SubmitHandler } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Button, IconButton, InputAdornment, TextField } from "@mui/material";
+import { LockPersonRounded, MailRounded, Visibility, VisibilityOff } from "@mui/icons-material";
 import { z } from "zod";
-import { useState } from 'react';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CircleNotch } from 'phosphor-react';
+
+import { AuthContext } from '../../utils/contexts/AuthProvider';
 
 const schema = z.object({
   email: z.string().email("Insira um email válido").nonempty("Campo obrigatório"),
-  password: z.string().min(8, "Senha mínima de 8 caracteres")
+  password: z.string().min(6, "Senha mínima de 6 caracteres")
 }).required()
 
-export function Form() {
-  const notify = () => toast("Apenas logar com o Google disponível", {type: "info"})
+export function LoginForm() {
+  const { login, loading } = useContext(AuthContext)
   const { 
     register,
     handleSubmit,
-    formState: { errors }
+    formState: { errors, isValid }
   } = useForm<z.infer<typeof schema>>({ resolver: zodResolver(schema)})
 
   const [showPassword, setShowPassword] = useState(false);
@@ -29,14 +30,14 @@ export function Form() {
     event.preventDefault();
   };
 
-  const onSubmit: SubmitHandler<z.infer<typeof schema>> = (formData) => {
+  const onSubmit: SubmitHandler<z.infer<typeof schema>> = async (formData) => {
     const data = schema.parse(formData)
-    notify()
+    login(data)
   }
 
   return <>
     <form
-    className="flex flex-col gap-4 w-[360px]"
+    className="flex flex-col gap-3 w-[360px] max-w-[100%] p-2"
     onSubmit={handleSubmit(onSubmit)}>
       <TextField 
         id="email"
@@ -84,7 +85,11 @@ export function Form() {
           )
       }}
       />
-      <Button type="submit" variant="contained" sx={{mt: 2}}>Entrar</Button>
+      <Button
+        type="submit"
+        variant="contained"
+        disabled={loading || !isValid}
+        sx={{mt: 2}}>{loading ? <CircleNotch size={26} className='animate-spin'/> :"Entrar"}</Button>
     </form>
   </>
 }

@@ -3,22 +3,43 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import { googleLogout } from '@react-oauth/google';
+import { Loading } from "../../components/wait/Loading";
+import { toast } from "react-toastify";
+import { string } from "zod";
+import { AUTH_COOKIE, GOOGLE_AUTH_COOKIE, decodeCookie, deleteCookie, getCookie, setCookie } from "../cookies";
+import { api } from "../services/api";
+
+interface IUser {
+  id: string;
+  name: string;
+  username: string;
+  email: string;
+  photoUrl: string;
+}
 interface AuthProps {
   authenticated: boolean;
-  accessToken: string;
+  accessTokenGoogleAuth: string;
+  user: IUser,
+  loading: boolean;
+  login: ({email, password}: { email: string, password: string }) => void;
   logoutGoogleAuth: () => void;
-  handleAccessToken: (accessToken: string) => void;
-  name: string;
-  setName: (name: string) => void;
+  handleAccessTokenGoogleAuth: (accessToken: string) => void;
 }
 
 const initialValues: AuthProps = {
   authenticated: false,
-  accessToken: "",
+  accessTokenGoogleAuth: "",
+  user: {
+    id: "",
+    name: "",
+    username: "",
+    email: "",
+    photoUrl: "",
+  },
+  loading: true,
+  login: ({email, password}: { email: string, password: string }) => {},
   logoutGoogleAuth: () => {},
-  handleAccessToken: (accessToken: string) => {},
-  name: "",
-  setName: (name: string) => {},
+  handleAccessTokenGoogleAuth: (accessToken: string) => {},
 };
 
 export const AuthContext = createContext(initialValues);
@@ -28,25 +49,47 @@ interface AuthProviderProps {
 }
 export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
   const [authenticated, setAuthenticated] = useState(false)
-  const [accessToken, setAccessToken] = useState("");
-  const [loading, setLoading] = useState(true)
-  const [name, setName] = useState("");
-  const navigate = useNavigate();
-
+  const [accessTokenGoogleAuth, setAccessTokenGoogleAuth] = useState("");
+  const [loading, setLoading] = useState(false)
+  const [user, setUser] = useState<IUser>(initialValues.user); 
+  
   useEffect(() => {
-    const token = localStorage.getItem("a-curiosidade-matou-o-gato")
+    setLoading(true)
 
-    if (token) setAuthenticated(true)
-  }, [])
+    const cookie = getCookie(AUTH_COOKIE);
 
-  useEffect(() => {
-    if (!authenticated) return navigate("/login", { replace: true });
-  }, [authenticated]);
+    if (cookie) {
+      (async () => {
+        api.defaults.headers.common["authorization"] = `Bearer ${cookie}`;
+        await api.get("user").then(({data}) => {
+          setUser({
+            id: data.id,
+            name: data.name,
+            username: data.username,
+            email: data.email,
+            photoUrl: data.photo ? data.photo : "",
+          })
+          setAuthenticated(true)
+        }).catch((err) => {
+          console.error({err})
+          logout()
+        })
+      })()
+    }
 
-  function handleAccessToken(token: string) {
-    setAccessToken(token);
+    const googleCookie = getCookie(GOOGLE_AUTH_COOKIE);
+
+    if (googleCookie) {
+      setAuthenticated(true)
+    }
+
+    setLoading(false)
+  }, [authenticated])
+  
+  function handleAccessTokenGoogleAuth(token: string) {
+    setLoading(true)
+    setCookie(GOOGLE_AUTH_COOKIE, token)
     setAuthenticated(true);
-    localStorage.setItem("a-curiosidade-matou-o-gato", token)
 
     const apiKey = `${import.meta.env.VITE_KEY_CLIENT_GOOGLE}`;
 
@@ -55,7 +98,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
     axios
       .get(url, {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${accessTokenGoogleAuth}`,
         },
       })
       .then((response) => {
@@ -63,27 +106,77 @@ export const AuthProvider: React.FC<AuthProviderProps> = (props) => {
       })
       .catch((error) => {
         console.error(error);
-      });
+      })
+      .finally(() => setLoading(false));
+  }
+
+  function logout() {
+    setAuthenticated(false);
+    setUser(initialValues.user);
+    deleteCookie(AUTH_COOKIE);
+    api.defaults.headers.common["authorization"] = "";
   }
 
   function logoutGoogleAuth() {
+    logout();
     googleLogout();
-    setAuthenticated(false);
-    setName("");
-    setAccessToken("");
-    localStorage.removeItem("a-curiosidade-matou-o-gato")
+    setAccessTokenGoogleAuth("");
+    deleteCookie(GOOGLE_AUTH_COOKIE)
   }
+
+  async function login({email, password}: { email: string, password: string}) {
+    setLoading(true)
+    await api
+      .post("user/login", {email, password})
+      .then(async (s) => {
+        toast("Login realizado com sucesso", {type: "success"})
+        const token = s.data.token;
+        api.defaults.headers.common["authorization"] = `Bearer ${token}`;
+        setCookie(AUTH_COOKIE, token)
+        await api
+          .get("user")
+          .then(({data}) => {
+            setUser({
+              id: data.id,
+              name: data.name,
+              username: data.username,
+              email: data.email,
+              photoUrl: data.photo ? data.photo : "",
+            })
+            setAuthenticated(true);
+          }).catch((err) => {
+            if (err.response.data.message)
+              toast(err.response.data.message, {type: "error"})
+            console.error({err})
+            logout()
+         })
+      })
+      .catch((err):any => {
+        console.error(err)
+        if (err.response?.data?.message === typeof string) {
+          toast(err.response.data.message, {type: "error"})
+        } else {
+          toast("Ops... Um erro inesperado aconteceu. Tente novamente mais tarde", {type: "error"})
+        }
+      })
+      .finally(() => setLoading(false))
+  }
+  
+  if (loading && !authenticated) <>
+    return <Loading />
+  </>
 
   return (
     <React.Fragment>
       <AuthContext.Provider
         value={{
           authenticated,
-          accessToken,
+          accessTokenGoogleAuth,
+          user,
+          loading,
+          login,
           logoutGoogleAuth,
-          handleAccessToken,
-          name,
-          setName,
+          handleAccessTokenGoogleAuth,
         }}
       >
         {props.children}

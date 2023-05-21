@@ -51,7 +51,11 @@ const Header: React.FC = () => {
                 "aria-labelledby": "basic-button",
               }}
             >
-              <MenuItem onClick={handleClose}>Profile</MenuItem>
+              <Link to="/profile">
+                <MenuItem>
+                  Profile
+                </MenuItem>
+              </Link>
               <MenuItem onClick={logoutGoogleAuth}>Logout</MenuItem>
             </Menu>
           </div>

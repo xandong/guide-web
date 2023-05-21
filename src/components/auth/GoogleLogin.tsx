@@ -5,11 +5,11 @@ import { useGoogleLogin } from '@react-oauth/google';
 import { AuthContext } from '../../utils/contexts/AuthProvider';
 
 export const GoogleLogin = () => {
-  const { handleAccessToken } = useContext(AuthContext)
+  const { handleAccessTokenGoogleAuth } = useContext(AuthContext)
   
   const handleGoogleAuth = useGoogleLogin({
     onSuccess: tokenResponse => {
-      handleAccessToken(tokenResponse.access_token)
+      handleAccessTokenGoogleAuth(tokenResponse.access_token)
     },
     onError: error => console.error({error})
   })
