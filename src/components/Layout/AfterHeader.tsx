@@ -4,7 +4,6 @@ import { MapPin } from "phosphor-react";
 
 import { LocationContext } from "../../utils/contexts/Location";
 import { DialogTransition } from "../dialog/DialogTransition";
-import { Alert } from "@mui/material";
 
 const AfterHeader: React.FC = () => {
   const { name } = useContext(LocationContext)
