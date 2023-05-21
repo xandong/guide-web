@@ -33,7 +33,7 @@ const AfterHeader: React.FC = () => {
           }
         </div>
 
-        <div>32&deg; - Maré baixa</div>
+        {/* <div>32&deg; - Maré baixa</div> */}
       </div>
     </React.Fragment>
   );

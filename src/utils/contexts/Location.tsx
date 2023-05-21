@@ -21,7 +21,7 @@ export const LocationProvider: React.FC<LocationProviderProps> = (props) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (name === "" ) return navigate("/check-in");
+    // if (name === "" ) return navigate("/check-in");
   }, [name])
 
   return (

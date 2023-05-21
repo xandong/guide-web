@@ -14,7 +14,6 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((e) => {
-      console.log(e)
       setCoords({
         lat: e.coords.latitude,
         lng: e.coords.longitude,

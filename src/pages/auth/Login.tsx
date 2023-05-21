@@ -1,43 +1,54 @@
 import React, { useContext, useEffect } from "react"
-import { Chip, Divider, Typography } from "@mui/material";
+import { Button, Chip, Divider, Typography } from "@mui/material";
 
 import { WrapperFull } from "../../components/Layout/WrapperFull"
-import { Form } from "../../components/Login/Form";
-import { GoogleLogin } from "../../components/Login/GoogleLogin";
+import { LoginForm } from "../../components/auth/LoginForm";
+import { GoogleLogin } from "../../components/auth/GoogleLogin";
 import { AuthContext } from "../../utils/contexts/AuthProvider";
-import { useNavigate } from "react-router-dom";
 import { Redirect } from "../../components/wait/Redirect";
+import { Link, useNavigate } from "react-router-dom";
 
-export const Login: React.FC = () => {
+const Login: React.FC = () => {
   document.title = "Login";
-
+  const navigate = useNavigate()
   const { authenticated } = useContext(AuthContext);
-  const navigate = useNavigate();
-
   useEffect(() => {
-    if (authenticated)
+    if (authenticated) {
       setTimeout(() => {
-        navigate("/", { replace: true })
-      }, 1500);
-  }, [authenticated])
+        navigate("/")
+      }, 500);
+    }
+  }, [authenticated]);
 
   return (
     <React.Fragment>
       {
         !authenticated ?
         <WrapperFull>
+          {/* <div className="absolute top-2 right-4 flex items-center gap-2">
+            <span className="sm:block hidden text-xs text-blue-400 font-semibold">Não possui uma conta?</span>
+            
+            <Link to="/register">
+            <Button variant="contained">Cadastrar</Button>
+            </Link>
+          </div> */}
+
           <img src="/guide-logo.svg" className="mb-6"/>
           <h1
           className="text-3xl font-bold text-blue-500 mb-10"
           >Acesse sua conta</h1>
-          <Form />
+          <LoginForm />
 
-          <div className="w-[320px] mt-6 flex flex-col items-center">
+          <Link to="/register" className="w-[360px] flex justify-start p-2">
+            <span className="text-xs text-blue-400 font-semibold">Não possui uma conta? Clique aqui!</span>
+          </Link>
+
+          <div className="w-[320px] mt-3 flex flex-col items-center">
             <Divider variant='middle'>
               <Chip label="OU" />
             </Divider>
 
-            <label htmlFor="buttonGoogleAuth" className="w-fit flex gap-4 justify-center items-center mt-4 p-2 rounded-full border-2 border-zinc-200">
+            <label htmlFor="buttonGoogleAuth" className="w-fit flex gap-4 justify-center items-center p-2 rounded-full border-2 border-zinc-200">
               <GoogleLogin />
               <span className="font-semibold text-sm text-zinc-400">
                 Entrar com o Google
@@ -50,3 +61,5 @@ export const Login: React.FC = () => {
     </React.Fragment>
   )
 }
+
+export default Login;

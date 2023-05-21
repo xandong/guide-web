@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
-import { Router } from "./utils/routes";
+import Router from "./utils/routes/Router";
 import { LocationProvider } from "./utils/contexts/Location";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { AuthProvider } from "./utils/contexts/AuthProvider";
@@ -13,7 +13,7 @@ const App: React.FC = () => {
     <React.Fragment>
       <ToastContainer
         position="top-center"
-        autoClose={5000}
+        autoClose={3500}
         hideProgressBar={false}
         closeOnClick
         pauseOnFocusLoss
