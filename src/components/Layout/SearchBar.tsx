@@ -14,7 +14,7 @@ const SearchBar: React.FC = () => {
   useEffect(() => {
     (async () => {
       try {
-        const response = await axios.get(`https://maps.googleapis.com/maps/api/place/details/json&key=${API_KEY}`)
+        const response = await axios.get(`https://maps.googleapis.com/maps/api/place/photo/json&key=${API_KEY}`)
         
         console.log({response})  
       } catch (error) {
@@ -32,7 +32,7 @@ const SearchBar: React.FC = () => {
           placeholder="Para onde devo te guiar?"
           type="search"
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={handleSearch}
         />
         <button
           type="submit"

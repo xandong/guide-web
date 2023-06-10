@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
-import CardsList from "../components/Home/CardsList";
+import { useParams } from "react-router-dom";
+
 import PageWrapper from "../components/Layout";
 import MapFloat from "../components/Layout/MapFloat";
+import PlacesList from "../components/Home/PlacesList";
+import TopicsList from "../components/Home/TopicsList";
 
 type Coords = {
   lat: number;
@@ -10,7 +13,9 @@ type Coords = {
 
 const Home: React.FC = () => {
   document.title = "Home";
+  const { service } = useParams()
   const [coords, setCoords] = useState<Coords>()
+  // TO-DO: fazer chamada com coords, guardar local do usuário para traçar rotas
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((e) => {
@@ -21,12 +26,16 @@ const Home: React.FC = () => {
     });
   }, [])
 
-  console.log({coords})
-
   return (
     <React.Fragment>
       <PageWrapper>
-        <CardsList />
+        {
+          service ? (
+            <PlacesList service={service} />
+          ) : (
+            <TopicsList />
+          )
+        }
       </PageWrapper>
 
       {/* Google Maps */}

@@ -1,7 +1,6 @@
 import React, { useContext } from "react"
 import { LocationContext } from "../utils/contexts/Location";
 import { useNavigate } from "react-router-dom";
-import beach from "../assets/beach3.gif"
 
 const CheckIn: React.FC = () => {
   document.title = "Check In"
@@ -11,7 +10,6 @@ const CheckIn: React.FC = () => {
 
   function handle(e: any) {
     setName(e.target.value)
-    console.log(e.target.value)
   }
 
   function onSubmit(e: any) {

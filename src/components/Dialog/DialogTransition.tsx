@@ -24,7 +24,7 @@ interface DialogTransitionProps {
   handleSuccess: () => void;
 }
 
-export const DialogTransition = (props: DialogTransitionProps) => {
+const DialogTransition = (props: DialogTransitionProps) => {
   const { titleAction, titleDialog, description, handleSuccess } = props;
   const [open, setOpen] = React.useState(false);
 
@@ -65,3 +65,5 @@ export const DialogTransition = (props: DialogTransitionProps) => {
     </div>
   );
 }
+
+export default DialogTransition;

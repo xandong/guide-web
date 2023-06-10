@@ -1,4 +1,4 @@
-import { CardSection } from "../model/CardSection";
+import { CardSection } from "../model/CardSection"
 import eventPic from "../../assets/event.png"
 import tourismPic from "../../assets/tourism.png"
 import servicePic from "../../assets/service.png"

@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { MapPin } from "phosphor-react";
 
 import { LocationContext } from "../../utils/contexts/Location";
-import { DialogTransition } from "../dialog/DialogTransition";
+import DialogTransition from "../dialog/DialogTransition";
 
 const AfterHeader: React.FC = () => {
   const { name } = useContext(LocationContext)

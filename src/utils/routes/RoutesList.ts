@@ -32,6 +32,11 @@ const guarded: RouteItem[] = [
     path: "/check-in",
     component: lazy(() => import("../../pages/CheckIn")),
     guarded: true,
+  },
+  {
+    path: "/:service",
+    component: lazy(() => import("../../pages/Home")),
+    guarded: true,
   }
 ];
 

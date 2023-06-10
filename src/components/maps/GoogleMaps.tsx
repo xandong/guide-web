@@ -1,5 +1,7 @@
-import React from "react";
-import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
+import React, { useState } from "react";
+import { GoogleMap, useJsApiLoader, Marker, LoadScript } from '@react-google-maps/api';
+import { WrapperFull } from "../Layout/WrapperFull";
+import { CircleNotch } from "phosphor-react";
 
 const containerStyle = {
   width: '100%',
@@ -10,7 +12,8 @@ const coords = {
   lat: -4.5677299, lng: -37.7691225
 };
 
-const GoogleMaps: React.FC = () => {
+const GoogleMaps: React.FC = () => { 
+  const [loading, setLoading] = useState(true);
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: import.meta.env.VITE_API_KEY_GOOGLE
@@ -32,26 +35,34 @@ const GoogleMaps: React.FC = () => {
 
   return (
     <React.Fragment>
-      {isLoaded && (
-        <GoogleMap
+      <LoadScript
+        googleMapsApiKey={import.meta.env.VITE_API_KEY_GOOGLE}  
+      >
+        {isLoaded ? (
+          <GoogleMap
           mapContainerStyle={containerStyle}
-          center={coords}
-          zoom={17}
-          options={{mapTypeId: "satellite"}}
-
-          onLoad={onLoad}
-          // onUnmount={onUnmount}
-          >
-            <Marker position={coords}
-            options={{
-              label: {
-                text: "Position current",
-                className: "-mt-11 bg-zinc-50 px-2 py-1 rounded font-bold border-2 border-zinc-300"
-              }
-            }}/>
-        </GoogleMap>
-        )
-      }
+            center={coords}
+            zoom={17}
+            options={{mapTypeId: "satellite"}}
+            
+            onLoad={onLoad}
+            // onUnmount={onUnmount}
+            >
+              <Marker position={coords}
+              options={{
+                label: {
+                  text: "Position current",
+                  className: "-mt-11 bg-zinc-50 px-2 py-1 rounded font-bold border-2 border-zinc-300"
+                }
+              }}/>
+          </GoogleMap>
+          ) : (
+            <WrapperFull fullScreen={false}>
+              <CircleNotch size={36} className="animate-spin" />
+            </WrapperFull>
+          )
+        }
+      </LoadScript>
     </React.Fragment>
   )
 }

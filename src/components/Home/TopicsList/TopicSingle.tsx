@@ -1,12 +1,12 @@
 import React from "react";
-import { CardSection } from "../../utils/model/CardSection";
+import { CardSection } from "../../../utils/model/CardSection";
 import { Link } from "react-router-dom";
 
-interface CardSingleProps {
+interface TopicSingleProps {
   option: CardSection;
 }
 
-const CardSingle: React.FC<CardSingleProps> = (props: CardSingleProps) => {
+const TopicSingle: React.FC<TopicSingleProps> = (props: TopicSingleProps) => {
   const { option } = props;
   return (
     <React.Fragment>
@@ -31,4 +31,4 @@ const CardSingle: React.FC<CardSingleProps> = (props: CardSingleProps) => {
   );
 };
 
-export default CardSingle;
+export default TopicSingle;
